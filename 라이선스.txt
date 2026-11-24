@@ -13,3 +13,7 @@ A Inspirational Piano Adventure (leberch): https://pixabay.com/music/main-title-
 - 음성: ElevenLabs TTS, 기본 목소리 Liam(TX3LPaxmHKxFdv7VOQHJ), 모델 eleven_v3, 무료 요금제(비상업·출처 표기 조건 — 성과공유회 영상 때와 같이 대표님 판단으로 운영)
 - 대본: 내레이션/01_내레이션_대본.md, 문장별 원본 내레이션/음성_리암, 무음 자른 것 음성_리암_trim
 - 섞기: 내레이션/build_narr.js → 내레이션/영상오디오_리암.m4a (배경음악 덕킹, 끝 2.5초 페이드)
+
+## 내레이션 목소리 변경·요금제 정정 (2026-11-24)
+- 목소리: ElevenLabs 기본 목소리 Bella(hpp4J3VqNfWAUOO0d1Us), eleven_multilingual_v2, 밝고 가벼운 톤(대표님: 기존 남성 목소리가 부담스럽다는 의견).
+- ⚠️ 정정: 현재 ElevenLabs 계정은 **무료 요금제**로 확인됨(라이브러리 목소리 API 사용 시 '무료 사용자' 오류). 무료 요금제는 비상업적 이용만 허용되고 'ElevenLabs' 출처 표기가 필요함. 앞에 적은 '유료 구독, 상업적 이용 가능'은 틀린 기록. 외부·공식 배포 전 유료 전환 또는 출처 표기 필요.
