@@ -99,7 +99,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:'SUIT
 .net line{stroke:#F5A733;stroke-width:1.2;stroke-opacity:.28}
 .net circle{fill:#E9C48C;opacity:0}
 #ui{position:fixed;left:0;right:0;bottom:0;display:flex;gap:12px;align-items:center;padding:10px 16px;background:rgba(0,0,0,.7);z-index:100;font:14px 'SUIT',sans-serif;color:#ddd;opacity:.15;transition:opacity .3s}
-#ui:hover{opacity:1}#ui button{background:#D9B36A;border:0;border-radius:6px;padding:6px 14px;font-weight:800;cursor:pointer;font-family:inherit}#ui input{flex:1}
+#ui:hover{opacity:1}#ui button{background:#D9B36A;border:0;border-radius:6px;padding:6px 14px;font-weight:800;cursor:pointer;font-family:inherit}#ui input{flex:1}#ui select{background:#2a201b;color:#F5A733;border:1px solid #F5A733;border-radius:6px;padding:5px 8px;font:700 14px SUIT,sans-serif}
 </style></head>
 <body><div id="stage">
 <div class="area" id="shots"></div><div class="area" id="dev"></div><div class="area" id="vig"></div><div class="area" id="layer"></div><div class="area" id="grain"><div></div></div><div class="area" id="flash"></div><div class="area" id="flare"><b></b><i></i></div>
@@ -109,7 +109,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:'SUIT
    원칙: 검은 화면 문구 → 박자에 맞춰 장면이 터짐. 흔들림·입자·빛줄기 없음, 컷은 강박에만, 화면 하나에 한 가지.
    음악 Epic Pirate 105.9BPM, 첫 박 0.225초. 첫 폭발 26박·잔잔 84박·두 번째 폭발 107박·끝 162박 */
 var BEAT = 0.5665, PH = 0.225; function gb(k) { return PH + BEAT * k; }
-var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_브라이언.m4a';
+var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_브라이언.m4a'; window.TRACKS = [['낮은 목소리', '내레이션/영상오디오_브라이언.m4a'], ['이전 목소리', '내레이션/영상오디오_리암.m4a'], ['음악만', '음악/배경음악.m4a']];
 var clamp = function (x, a, b) { return Math.max(a == null ? 0 : a, Math.min(b == null ? 1 : b, x)); };
 var ease = function (x) { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
 var eo = function (x) { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
@@ -378,12 +378,12 @@ if (!/[?&]render/.test(location.search)) {
   var stage = $('stage');
   var fit = function () { var q = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = 'translate(' + ((innerWidth - 1920 * q) / 2) + 'px,' + ((innerHeight - 1080 * q) / 2) + 'px) scale(' + q + ')'; };
   fit(); addEventListener('resize', fit);
-  var ui = document.createElement('div'); ui.id = 'ui'; ui.innerHTML = '<button id="pp">재생</button><input id="sk" type="range" min="0" step="0.01" max="' + DURATION + '"><span id="tc"></span>'; document.body.appendChild(ui);
+  var ui = document.createElement('div'); ui.id = 'ui'; ui.innerHTML = '<button id="pp">재생</button><input id="sk" type="range" min="0" step="0.01" max="' + DURATION + '"><span id="tc"></span>' + (window.TRACKS ? '<select id="vo">' + TRACKS.map(function (k) { return '<option value="' + k[1] + '">' + k[0] + '</option>'; }).join('') + '</select>' : ''); document.body.appendChild(ui);
   var pp = ui.querySelector('#pp'), sk = ui.querySelector('#sk'), tc = ui.querySelector('#tc'), au = new Audio(MUSIC), t = 0, playing = false, last = 0;
   var mm = function (x) { return Math.floor(x / 60) + ':' + ('0' + Math.floor(x % 60)).slice(-2); };
   var seek = function (x) { t = clamp(x, 0, DURATION); au.currentTime = t; };
   var toggle = function () { playing = !playing; pp.textContent = playing ? '정지' : '재생'; last = performance.now(); if (t >= DURATION - .05) seek(0); if (playing) { au.currentTime = t; au.play(); } else au.pause(); };
-  pp.onclick = toggle; sk.oninput = function () { seek(+sk.value); };
+  pp.onclick = toggle; var vo = ui.querySelector('#vo'); if (vo) vo.onchange = function () { au.pause(); au.src = vo.value; au.currentTime = t; if (playing) au.play(); vo.blur(); }; sk.oninput = function () { seek(+sk.value); };
   addEventListener('keydown', function (e) { if (e.code === 'Space') { e.preventDefault(); toggle(); } if (e.code === 'ArrowRight') seek(t + 5); if (e.code === 'ArrowLeft') seek(t - 5); if (e.code === 'KeyF') fs(); });
   var fs = function () { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); };
   stage.ondblclick = fs;
