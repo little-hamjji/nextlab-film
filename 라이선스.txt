@@ -20,3 +20,8 @@ A Inspirational Piano Adventure (leberch): https://pixabay.com/music/main-title-
 
 [2026-11-24 잔잔한 음악 선택지]
 - 「여성 목소리 · 잔잔한 음악」「잔잔한 음악만」: 위 A Inspirational Piano Adventure(Pixabay, leberch) 0:00~1:44, 1.5초 페이드인, 음악 0.6배(음악/잔잔한음악.m4a, 내레이션/영상오디오_벨라_피아노.m4a). 기존 곡 선택지는 그대로 유지.
+
+## 한국어 목소리 (2026-11-24, ElevenLabs Starter 유료 전환 — 대표님 결제)
+- 이제 상업적 이용 가능(Starter). 앞의 '무료 요금제' 경고는 이 날짜 이후 생성분에는 해당하지 않음. 그 전에 만든 Liam·Brian·Bella 음원은 무료 요금제 때 생성분.
+- 활동영상: Jiyoung(AW5wrnG1jVizOYY7R1Oo, 한국어 여성, 차분), multilingual_v2, speed 0.92, 문장 간 최소 1.3초.
+- 매뉴얼 애니메이션 내레이션: Annie(Lb7qkOn5hF8p7qfCDH8q, 한국어 여성, 밝고 부드러움), 해요체 대본(admin_ani.tsv·participant_ani.tsv).
