@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXT LAB 임팩트 지속관리 연구소</title>
+<style>
+@font-face{font-family:'SUIT';font-weight:100 900;src:url('fonts/SUIT-Variable.woff2') format('woff2-variations'),url('fonts/SUIT-Variable.woff2') format('woff2')}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:'SUIT',sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#000}
+/* 영화 비율 2.39:1 → 그림 영역 1920x804, 위아래 띠 138px */
+.bar{position:absolute;left:0;right:0;height:138px;background:#000;z-index:50}.bar.t{top:0}.bar.b{bottom:0}
+.area{position:absolute;left:0;top:138px;width:1920px;height:804px;overflow:hidden}
+#shots img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;will-change:transform,opacity}
+#vig{z-index:20;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(0,0,0,.55) 100%),linear-gradient(0deg,rgba(0,0,0,.55),transparent 38%)}
+#layer{z-index:30}
+#grain{z-index:35;pointer-events:none;opacity:.07;mix-blend-mode:screen}
+#grain div{position:absolute;left:-128px;top:-128px;width:2176px;height:1060px}
+#flash{z-index:40;background:#fff4de;opacity:0;pointer-events:none}
+.card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;opacity:0;will-change:transform,opacity,filter;text-align:center}
+.card .d{font-size:26px;font-weight:700;letter-spacing:.42em;color:#F5A733;margin-right:-.42em}
+.card .s{font-size:54px;font-weight:300;letter-spacing:-.02em;color:#EDE6DA}
+.card .m{font-size:96px;font-weight:800;letter-spacing:-.04em;line-height:1.05;color:#F7F2EA}
+.card .l{font-size:104px;font-weight:800;letter-spacing:-.04em;line-height:1.05;color:#F7F2EA}
+.card .w{font-size:150px;font-weight:800;letter-spacing:-.04em;line-height:1;color:#F7F2EA}
+.card .g{color:#F5A733}
+.card .rule{width:72px;height:2px;background:#F5A733;opacity:.8}
+.lab{position:absolute;left:96px;bottom:56px;opacity:0;font-size:32px;font-weight:600;letter-spacing:.04em;color:#EDE6DA;white-space:nowrap;text-shadow:0 2px 16px rgba(0,0,0,.7)}
+.lab b{color:#F5A733;font-weight:800;margin-right:16px;letter-spacing:.12em}
+.lt{position:absolute;left:0;right:0;bottom:96px;text-align:center;opacity:0;font-size:60px;font-weight:800;letter-spacing:-.035em;color:#F4EFE6;text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 28px rgba(0,0,0,.9),0 8px 60px rgba(0,0,0,.9)}
+.lt b{color:#F5A733;font-weight:800}
+.lt b.dt{margin-right:24px;font-size:36px;letter-spacing:.12em;vertical-align:4px}
+.lt.big{bottom:40px;font-size:66px;font-weight:800;line-height:1.18}.lt.big b{font-size:96px;font-weight:900;letter-spacing:-.04em}
+/* v8 CRM 한 스푼: 앰버(#F5A733)·고동 바탕, 단계 알약, 기기 화면, 아나모픽 플레어 */
+#shots{background:#0c0705}
+#dev{z-index:10;perspective:2200px;pointer-events:none}
+.dev{position:absolute;left:50%;top:392px;width:1000px;margin-left:-500px;opacity:0;border-radius:26px;overflow:hidden;border:1px solid rgba(245,167,51,.28);background:#120b08;box-shadow:0 60px 140px rgba(0,0,0,.75),0 0 120px rgba(245,167,51,.16);transform-origin:50% 50%;will-change:transform,opacity}
+.dev img{display:block;width:100%;height:auto;max-height:400px;object-fit:cover;object-position:50% 0}
+#stagebar{position:absolute;left:0;right:0;top:56px;display:flex;justify-content:center;gap:14px;opacity:0;z-index:31}
+.pill{padding:12px 26px;border-radius:999px;border:1.5px solid rgba(245,167,51,.35);color:rgba(247,239,232,.45);font-size:24px;font-weight:700;letter-spacing:-.01em;background:rgba(18,11,8,.6)}
+.pill.on{background:#F5A733;border-color:#F5A733;color:#2a1710;box-shadow:0 0 40px rgba(245,167,51,.45)}
+#flare{z-index:41;pointer-events:none;opacity:0}
+#flare i{position:absolute;left:-10%;right:-10%;top:50%;height:4px;margin-top:-2px;background:linear-gradient(90deg,transparent,rgba(245,167,51,.0) 10%,rgba(255,214,150,.95) 50%,rgba(245,167,51,0) 90%,transparent);filter:blur(1.5px);box-shadow:0 0 30px 8px rgba(245,167,51,.45)}
+#flare b{position:absolute;left:50%;top:50%;width:900px;height:900px;margin:-450px 0 0 -450px;border-radius:50%;background:radial-gradient(circle,rgba(255,200,120,.35),rgba(245,167,51,0) 60%)}
+.card .d.ix{font-size:22px;letter-spacing:.5em;margin-bottom:-4px;opacity:.9}
+/* v9 고조 모션 */
+.zip{position:absolute;left:0;height:2px;opacity:0;background:linear-gradient(90deg,transparent,rgba(245,167,51,.9) 70%,#FFE2B0);box-shadow:0 0 14px rgba(245,167,51,.7);z-index:29;will-change:transform,opacity}
+.pbar{position:absolute;left:510px;width:900px;top:672px;height:6px;border-radius:3px;background:rgba(247,239,232,.12);opacity:0;z-index:31}
+.pbar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;background:linear-gradient(90deg,#c47a12,#F5A733);box-shadow:0 0 22px rgba(245,167,51,.8)}
+.pbar em{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#FFE2B0;box-shadow:0 0 26px 8px rgba(245,167,51,.85)}
+.chip{position:absolute;left:96px;top:48px;opacity:0;z-index:32;padding:24px 38px 24px 34px;border-radius:22px;background:rgba(18,11,8,.62);border:1px solid rgba(245,167,51,.3);border-left:4px solid #F5A733;box-shadow:0 20px 60px rgba(0,0,0,.45);backdrop-filter:blur(14px);will-change:transform,opacity}
+.chip s{display:block;text-decoration:none;font-size:24px;font-weight:700;letter-spacing:.14em;color:#F5A733;margin-bottom:6px}
+.chip strong{display:block;font-size:52px;font-weight:800;letter-spacing:-.03em;color:#F7F2EA}
+.chip span{display:block;font-size:28px;font-weight:500;color:#b9a99e;margin-top:6px}
+/* v10 도입 타임라인: 사업 기간이 차오르다 '종료'에서 멈춤 → 그다음 점선 → 네 개의 빛이 길을 밝힘 */
+#tl{position:absolute;inset:0;opacity:0;z-index:31;pointer-events:none}
+#tl .trk{position:absolute;left:260px;width:900px;top:640px;height:2px;background:rgba(247,239,232,.14)}
+#tl .fil{position:absolute;left:260px;top:639px;height:4px;width:0;border-radius:2px;background:linear-gradient(90deg,#7a440a,#F5A733);box-shadow:0 0 18px rgba(245,167,51,.7)}
+#tl .dash{position:absolute;left:1160px;top:640px;height:2px;width:0;background:repeating-linear-gradient(90deg,rgba(247,239,232,.5) 0 14px,transparent 14px 26px)}
+#tl .fil2{position:absolute;left:1160px;top:639px;height:4px;width:0;border-radius:2px;background:linear-gradient(90deg,#F5A733,#FFE2B0);box-shadow:0 0 24px rgba(245,167,51,.95)}
+#tl .end{position:absolute;left:1158px;top:606px;width:4px;height:70px;border-radius:2px;background:#F5A733;opacity:0;box-shadow:0 0 22px #F5A733}
+#tl .md{position:absolute;top:633px;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#2a1a12;border:2px solid rgba(245,167,51,.45)}
+#tl .md.on{background:#F5A733;border-color:#F5A733;box-shadow:0 0 16px rgba(245,167,51,.8)}
+#tl .lb{position:absolute;top:684px;font-size:28px;font-weight:700;letter-spacing:.06em;color:rgba(247,239,232,.6);transform:translateX(-50%);opacity:0;white-space:nowrap}
+#tl .lb.e{color:#F5A733}
+#tl .pp{position:absolute;top:632px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#FFE2B0;box-shadow:0 0 26px 8px rgba(245,167,51,.85);opacity:0}
+/* v13 사례표 모션그래픽(중간발표 4장 「외부 사후관리 사업 사례 분석」 기반) */
+.cases{position:absolute;left:190px;width:1540px;top:60px;opacity:0;z-index:33;border-radius:26px;padding:30px 44px 28px;background:rgba(18,11,8,.86);border:1px solid rgba(245,167,51,.3);box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 90px rgba(245,167,51,.12)}
+.cases h4{margin:0 0 14px;display:flex;justify-content:space-between;align-items:center;font-size:32px;font-weight:800;letter-spacing:-.02em;color:#F7F2EA}
+.cases h4 em{font-style:normal;font-size:24px;font-weight:800;color:#2a1710;background:#F5A733;border-radius:999px;padding:8px 22px;box-shadow:0 0 30px rgba(245,167,51,.45)}
+.cases .sh{border-radius:14px;overflow:hidden;border:1px solid rgba(245,167,51,.22);background:rgba(255,255,255,.02)}
+.cases .hd,.cases .r{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:20px;padding:0 24px;height:50px}
+.cases .hd{background:rgba(245,167,51,.12);font-size:20px;font-weight:800;color:#F5A733}
+.cases .vp{height:300px;overflow:hidden}
+.cases .r{border-top:1px solid rgba(245,167,51,.1);opacity:1;font-size:24px}
+.cases .r:nth-child(even){background:rgba(255,255,255,.025)}
+.cases .r b{justify-self:start;font-size:18px;font-weight:800;color:#EDE6DA;border:1px solid rgba(247,239,232,.35);border-radius:999px;padding:3px 14px}
+.cases .r b.in{color:#2a1710;background:#F5A733;border-color:#F5A733}
+.cases .r span{color:#EDE6DA;font-weight:500;white-space:nowrap}
+.cases .c{margin-top:16px;padding-top:16px;border-top:2px solid #F5A733;font-size:30px;font-weight:800;color:#F7F2EA;opacity:0}
+.cases .c i{font-style:normal;color:#F5A733}
+.cases .hd,.cases .r{grid-template-columns:110px 1fr 260px !important}
+.cases .hd i,.cases .r i{font-style:normal;justify-self:end;font-size:19px;font-weight:600;color:#b9a99e}
+.cases .hd i{color:#F5A733;font-weight:800}
+.cases .src{margin-top:12px;font-size:19px;font-weight:600;color:#938176;letter-spacing:.01em}
+.cases.lim .lr{display:grid;grid-template-columns:64px 1fr 520px;align-items:center;gap:18px;padding:15px 6px;border-top:1px solid rgba(245,167,51,.16);opacity:0}
+.cases.lim .lr u{text-decoration:none;font-size:24px;font-weight:900;color:#F5A733}
+.cases.lim .lr b{font-size:28px;font-weight:800;color:#F7F2EA}
+.cases.lim .lr span{font-size:24px;font-weight:600;color:#F5A733}
+.card .xl{font-size:124px;font-weight:800;letter-spacing:-.04em;line-height:1.08;color:#F7F2EA;white-space:nowrap}
+.card .xl.g{color:#F5A733}
+.card .s2{font-size:64px;font-weight:300;letter-spacing:-.02em;color:#EDE6DA;white-space:nowrap}
+.card .xl .ch{display:inline-block;will-change:transform,opacity,filter}
+#iglow{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse 55% 42% at 50% 38%,rgba(245,167,51,.22),rgba(245,167,51,.06) 45%,transparent 72%)}
+.dust{position:absolute;left:0;top:0;width:5px;height:5px;border-radius:50%;background:#FFD9A0;box-shadow:0 0 10px 2px rgba(245,167,51,.6);opacity:0;pointer-events:none}
+.gcount{position:absolute;left:0;right:0;top:40px;text-align:center;font-size:470px;font-weight:900;letter-spacing:-.04em;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(245,167,51,.16);opacity:0;pointer-events:none;white-space:nowrap}
+.gcount.dday{-webkit-text-stroke:1.5px rgba(245,167,51,.32)}
+.gq{position:absolute;left:0;right:0;top:-60px;text-align:center;font-size:720px;font-weight:900;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(245,167,51,.14);opacity:0;pointer-events:none}
+.ring{position:absolute;left:1160px;top:640px;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:2px solid rgba(245,167,51,.8);opacity:0;pointer-events:none}
+.net{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
+.net line{stroke:#F5A733;stroke-width:1.2;stroke-opacity:.28}
+.net circle{fill:#E9C48C;opacity:0}
+#ui{position:fixed;left:0;right:0;bottom:0;display:flex;gap:12px;align-items:center;padding:10px 16px;background:rgba(0,0,0,.7);z-index:100;font:14px 'SUIT',sans-serif;color:#ddd;opacity:.15;transition:opacity .3s}
+#ui:hover{opacity:1}#ui button{background:#D9B36A;border:0;border-radius:6px;padding:6px 14px;font-weight:800;cursor:pointer;font-family:inherit}#ui input{flex:1}
+</style></head>
+<body><div id="stage">
+<div class="area" id="shots"></div><div class="area" id="dev"></div><div class="area" id="vig"></div><div class="area" id="layer"></div><div class="area" id="grain"><div></div></div><div class="area" id="flash"></div><div class="area" id="flare"><b></b><i></i></div>
+<div class="bar t"></div><div class="bar b"></div></div>
+<script>
+/* NEXT LAB 「임지연(임팩트 지속관리 연구소)」 v6: 시네마틱 트레일러형.
+   원칙: 검은 화면 문구 → 박자에 맞춰 장면이 터짐. 흔들림·입자·빛줄기 없음, 컷은 강박에만, 화면 하나에 한 가지.
+   음악 Epic Pirate 105.9BPM, 첫 박 0.225초. 첫 폭발 26박·잔잔 84박·두 번째 폭발 107박·끝 162박 */
+var BEAT = 0.5665, PH = 0.225; function gb(k) { return PH + BEAT * k; }
+var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_브라이언.m4a';
+var clamp = function (x, a, b) { return Math.max(a == null ? 0 : a, Math.min(b == null ? 1 : b, x)); };
+var ease = function (x) { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+var eo = function (x) { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
+var lerp = function (a, b, p) { return a + (b - a) * p; };
+var $ = function (id) { return document.getElementById(id); };
+var shotsEl = $('shots'), layer = $('layer'), flash = $('flash'), grain = $('grain').firstChild;
+var flare = $('flare'), BARS = document.querySelectorAll('.bar');
+function set(e, k, v) { if (e['_' + k] !== v) { e['_' + k] = v; if (k === 'html') e.innerHTML = v; else e.style[k] = v; } }
+var P = '사진_웹/', IMGS = [], SHOTS = [], CARDS = [], LABS = [], NUMS = [], FLASH = [HIT1, DROP];
+
+/* 필름 질감: 한 번 만든 노이즈를 프레임마다 위치만 바꿈 */
+(function () { var c = document.createElement('canvas'); c.width = c.height = 256; var x = c.getContext('2d'), d = x.createImageData(256, 256), s = 7;
+  for (var i = 0; i < d.data.length; i += 4) { s = (s * 16807) % 2147483647; var v = s % 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  x.putImageData(d, 0, 0); grain.style.backgroundImage = 'url(' + c.toDataURL() + ')'; })();
+
+/* 사진 컷: a~b 동안 보임(강박에 바로 잘림), 천천히 확대·이동 */
+function shot(a, b, src, o) { o = o || {}; var im = document.createElement('img'); im.src = src; if (o.pos) im.style.objectPosition = o.pos; if (o.fit) { im.style.objectFit = o.fit; im.style.background = '#05070d'; } shotsEl.appendChild(im); IMGS.push(im); SHOTS.push({ a: a, b: b, im: im, kb: o.kb || 'in', dim: o.dim == null ? .12 : o.dim, fin: o.fin || .06, grade: o.fit ? false : true }); }
+/* 문구 카드: lines = [[html, 클래스]], in: 'fade'(번지듯) | 'cut'(강박에 탁) */
+function card(a, b, lines, o) { o = o || {}; var e = document.createElement('div'); e.className = 'card'; e.innerHTML = lines.map(function (l) { return l[1] === 'rule' ? '<div class="rule"></div>' : '<div class="' + l[1] + '">' + l[0] + '</div>'; }).join(''); layer.appendChild(e); CARDS.push({ a: a, b: b, e: e, in: o.in || 'fade', out: o.out == null ? .35 : o.out }); return e; }
+function lab(a, b, html, cls) { var e = document.createElement('div'); e.className = cls || 'lab'; e.innerHTML = html; layer.appendChild(e); LABS.push({ a: a, b: b, e: e }); }
+function num(a, b, v, dec, unit, label) { var e = card(a, b, [['<span class="n">0</span><span style="font-size:72px;font-weight:600;margin-left:14px">' + unit + '</span>', 'w g'], [label, 's']], { in: 'cut' }); NUMS.push({ a: a, e: e.querySelector('.n'), v: v, dec: dec }); }
+
+/* v8: CRM 화면을 기기처럼 기울여 보여 주는 제품 컷 */
+var devEl = $('dev'), DEVS = [];
+function device(a, b, src, dir, zin) { var d = document.createElement('div'); d.className = 'dev'; var im = document.createElement('img'); im.src = src; d.appendChild(im); devEl.appendChild(d); IMGS.push(im); DEVS.push({ a: a, b: b, e: d, dir: dir || 1, zin: !!zin }); }
+/* v8: CRM 단계 알약 — 박자마다 하나씩 켜짐 */
+var stageBar = document.createElement('div'); stageBar.id = 'stagebar'; layer.appendChild(stageBar);
+var PILLS = ['신청', '심사', '사업관리', '정산', '성과', '사후관리'].map(function (s) { var p = document.createElement('div'); p.className = 'pill'; p.textContent = s; stageBar.appendChild(p); return p; });
+var PILL_A = 0, PILL_B = 0;
+/* v10 도입 타임라인 */
+var TL = document.createElement('div'); TL.id = 'tl';
+TL.innerHTML = '<div class="trk"></div><div class="dash"></div><div class="fil"></div><div class="fil2"></div><div class="end"></div>' + [0, 1, 2, 3].map(function (i) { return '<div class="md" style="left:' + (260 + i * 225) + 'px"></div>'; }).join('') + '<div class="lb" style="left:260px">사업 시작</div><div class="lb e" style="left:1160px">사업 종료</div><div class="lb q" style="left:1660px">사후관리</div>' + [0, 1, 2, 3].map(function () { return '<div class="pp"></div>'; }).join('');
+layer.appendChild(TL);
+var TLq = function (s) { return TL.querySelector(s); }, TL_F = TLq('.fil'), TL_F2 = TLq('.fil2'), TL_D = TLq('.dash'), TL_E = TLq('.end'), TL_MD = TL.querySelectorAll('.md'), TL_LB = TL.querySelectorAll('.lb'), TL_PP = TL.querySelectorAll('.pp');
+/* ===== 0. 도입(잔잔, 0~15초): 검은 화면 질문, 사이사이 한 박짜리 장면이 스침 ===== */
+/* v14 도입 웅장: 큰 글자(xl 124px·s2 64px), 글자 간격이 넓게 퍼졌다 모임, 뒤에서 앰버 빛, 떠다니는 빛 먼지 */
+function ecard(a, b, lines, pb) { var e = card(a, b, lines), c = CARDS[CARDS.length - 1]; c.epic = true; if (pb) e.style.paddingBottom = pb; c.chs = []; Array.prototype.forEach.call(e.querySelectorAll('.xl'), function (x) { x.innerHTML = x.textContent.split('').map(function (ch) { return '<span class="ch">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>'; }).join(''); c.chs = c.chs.concat(Array.prototype.slice.call(x.querySelectorAll('.ch'))); }); return e; }
+ecard(gb(2), gb(8), [['모든 사업에는', 's2'], ['끝나는 날이 있습니다', 'xl']]);
+ecard(gb(9), gb(15), [['끝난 뒤는,', 's2'], ['늘 비어 있었습니다', 'xl g']], '200px');
+ecard(gb(17), gb(25), [['2026년, 네 사람이', 's2'], ['사후관리의 답을 찾아 나섰습니다', 'xl']], '200px');
+var IGLOW = document.createElement('div'); IGLOW.id = 'iglow'; layer.insertBefore(IGLOW, layer.firstChild);
+/* v15 도입 모션그래픽: ① D-3→D-DAY 카운트다운 ② 사업 종료 지점 레이더 동심원 + 거대한 ? ③ 관계망(점이 켜지며 선으로 이어짐) */
+var GC = document.createElement('div'); GC.className = 'gcount'; layer.insertBefore(GC, layer.firstChild);
+var GQ = document.createElement('div'); GQ.className = 'gq'; GQ.textContent = '?'; layer.insertBefore(GQ, layer.firstChild);
+var RINGS = [0, 1, 2].map(function () { var r = document.createElement('div'); r.className = 'ring'; layer.insertBefore(r, layer.firstChild); return r; });
+var NET = (function () {
+  var P2 = [], i, s = 11; for (i = 0; i < 18; i++) { s = (s * 9301 + 49297) % 233280; var x = 120 + (s / 233280) * 1680; s = (s * 9301 + 49297) % 233280; var y = 60 + (s / 233280) * 470; P2.push([x, y]); }
+  var L2 = []; for (i = 1; i < P2.length; i++) { var best = [], j; for (j = 0; j < i; j++) best.push([Math.hypot(P2[i][0] - P2[j][0], P2[i][1] - P2[j][1]), j]); best.sort(function (a, b) { return a[0] - b[0]; }); L2.push([i, best[0][1], best[0][0]]); if (best[1] && i % 2) L2.push([i, best[1][1], best[1][0]]); }
+  var svg = '<svg class="net" width="1920" height="804" viewBox="0 0 1920 804">' + L2.map(function (l) { return '<line x1="' + P2[l[1]][0].toFixed(0) + '" y1="' + P2[l[1]][1].toFixed(0) + '" x2="' + P2[l[0]][0].toFixed(0) + '" y2="' + P2[l[0]][1].toFixed(0) + '" stroke-dasharray="' + l[2].toFixed(0) + '" stroke-dashoffset="' + l[2].toFixed(0) + '"/>'; }).join('') + P2.map(function (p) { return '<circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="3"/>'; }).join('') + '</svg>';
+  var w = document.createElement('div'); w.innerHTML = svg; var el = w.firstChild; layer.insertBefore(el, layer.firstChild);
+  return { el: el, lines: el.querySelectorAll('line'), dots: el.querySelectorAll('circle'), L: L2 };
+})();
+var DUST = []; for (var di = 0; di < 70; di++) { var dd = document.createElement('div'); dd.className = 'dust'; layer.insertBefore(dd, layer.firstChild); DUST.push({ e: dd, x: (di * 271) % 1920, y: (di * 389) % 804, s: .4 + ((di * 37) % 10) / 9, sp: 8 + (di * 13) % 22, ph: di * 1.9 }); }
+
+/* ===== 1. 첫 폭발: 제목 ===== */
+shot(HIT1, gb(32), P + '07_7_팀셀카.jpg', { pos: '50% 40%', dim: .7, fin: 0 });
+card(HIT1, gb(32), [['NEXT LAB', 'w g'], ['', 'rule'], ['임팩트 지속관리 연구소', 's']], { in: 'cut' });
+
+/* ===== 2. 여정(웅장, v11): 3장 — [검은 화면 문장 3박] → [사진 7장×2박 + 과정 문장 두 줄]. 장 길이 17박(32~83) ===== */
+/* v11 순서 정리(대표님 11/24 「개연성」 지적): 시간 순서 = 05–06 사례·방문 → 07 인터뷰·법률 → 08 중간발표·09 설문 → (잔잔) 설문 결과 → (폭발) 깨달음·만듦 → 10 검증 → 11 고침 */
+var ACT = [
+  [['사업이 끝난 뒤를 챙기는 법,', '어디에도 정답은 없었습니다'], ['<b class="dt">05–06</b>내·외부 사례 45건을 살폈고', '재단 사후관리의 한계를 다섯 가지로 짚고', '참여 기업을 직접 찾아갔습니다'],
+    [['', '', 'gfx', 12], ['06_1_포인핸드방문.jpg', '50% 30%']], [6, 12]],
+  [['그리고', '직접 들으러 갔습니다'], ['<b class="dt">07</b>참여 기관 대표와 참여자를 깊이 인터뷰하고', '참여자 개인정보를 어디까지 쓸 수 있는지, 법률 자문을 받았습니다'],
+    [['07_1_인터뷰포인핸드.jpg', '40% 45%', '', 4], ['07_4_인터뷰.jpg', '50% 50%', '', 4], ['07_11_법률자문.jpg', '50% 55%'], ['07_12_법률자문.jpg', '50% 50%'], ['07_9_법률자문단체.jpg', '50% 45%']], [8]],
+  [['모은 이야기를', '처음으로 꺼내 보였습니다'], ['<b class="dt">08.20</b>NEXT LAB 중간발표', '그동안 모은 이야기를 담은 <b>첫 시제품</b>을 시연했습니다', '<b class="dt">09</b>참여자와 실무자에게 <b>다시 물었습니다</b>'],
+    [['08_2_중간발표표지.jpg', '50% 45%'], ['08_1_중간발표객석.jpg', '50% 50%'], ['08_3_중간발표팀소개.jpg', '45% 42%', '', 2, 'zin'], ['화면/proto_1.jpg', '', 'dev', 2, 'zin'], ['화면/proto_2.jpg', '', 'dev'], ['09_3_사무실회의.jpg', '50% 55%'], ['09_6_사무실회의.jpg', '50% 50%']], [6, 10]]
+];
+var KB = ['in', 'left', 'out', 'right'];
+ACT.forEach(function (c, i) {
+  var k = 32 + i * 17, sp = Array.isArray(c[3]) ? c[3] : [c[3] * 2];
+  card(gb(k), gb(k + 3), [['0' + (i + 1) + ' / 03', 'd ix'], [c[0][0], 's'], [c[0][1], 'l']], { in: 'cut', out: .15 });
+  FLASH.push([gb(k), .28]);
+  var t = k + 3; c[2].forEach(function (p, j) { var len = p[3] || 2, a = gb(t), b = gb(t + len); t += len; if (p[2] === 'gfx') return; if (p[2] === 'dev') device(a, b, p[0], j % 2 ? -1 : 1, p[4] === 'zin'); else shot(a, b, P + p[0], { pos: p[1], kb: p[4] || KB[(i + j) % 4], dim: .3 }); if (p[4] === 'zin' && p[2] === 'dev') FLASH.push([a, .35]); });
+  var bd = [0].concat(sp, [14]); c[1].forEach(function (t, n) { lab(gb(k + 3 + bd[n]) + (n ? 0 : .1), gb(k + 3 + bd[n + 1]), t, 'lt'); });
+});
+/* ===== 3. 잔잔(울림): 설문 24명의 대비 — 근거: 양적 설문조사 결과(연락 거의 없음 25.0%, 재참여 긍정 79.2%) — 대표님 지시로 명수는 빼고 비율만 ===== */
+/* v9 고조: 휙휙 들어오는 문구 + 앰버 속도선 + 비율 막대 + 숫자 카운트, DROP 직전 떨림 */
+function wcard(a, b, lines, o) { o = o || {}; var e = card(a, b, lines, { in: 'whoosh' }), c = CARDS[CARDS.length - 1]; c.seed = o.seed || 0; c.push = o.push || .05; c.shake = o.shake || 0; return e; }
+var ZIPS = [];
+function zip(t, y, dir, w) { var z = document.createElement('div'); z.className = 'zip'; z.style.top = y + 'px'; z.style.width = (w || 560) + 'px'; layer.appendChild(z); ZIPS.push({ t: t, e: z, dir: dir, w: w || 560 }); }
+function zips(t, n, seed) { for (var i = 0; i < n; i++) zip(t + i * .06, 130 + ((seed * 7 + i * 263) % 540), (i + seed) % 2 ? 1 : -1, 380 + ((i * 197 + seed * 31) % 420)); }
+var PBARS = [];
+function pbar(a, b, pct) { var e = document.createElement('div'); e.className = 'pbar'; e.innerHTML = '<i></i><em></em>'; layer.appendChild(e); PBARS.push({ a: a, b: b, e: e, f: e.firstChild, h: e.lastChild, p: pct }); }
+function cnt(e, a, v, dec) { NUMS.push({ a: a + .15, e: e.querySelector('.n'), v: v, dec: dec }); }
+wcard(gb(84), gb(90), [['참여했던 분들께 물었습니다', 's'], ['사업이 끝난 뒤, 어떻게 지내셨나요', 'm']], { seed: 0 }); zips(gb(84), 4, 1);
+cnt(wcard(gb(90), gb(96), [['<span class="n">0</span>%', 'w'], ['연락이 거의 끊겨 있었습니다', 'm']], { seed: 1 }), gb(90), 25, 0); zips(gb(90), 5, 2); pbar(gb(90) + .35, gb(96), 25);
+cnt(wcard(gb(96), gb(102), [['그런데', 's'], ['<span class="n">0</span>%', 'w g'], ['다시 함께하고 싶다고 답했습니다', 'm']], { seed: 0, push: .07 }), gb(96) + .2, 79.2, 1); zips(gb(96), 6, 3); pbar(gb(96) + .55, gb(102), 79.2);
+wcard(gb(102), DROP, [['다시 함께하려는 분은 많았지만', 's'], ['이어 줄 방법이 없었습니다', 'm']], { seed: 1, push: .12, shake: BEAT * 2.2 });
+/* DROP 직전 속도선이 점점 촘촘해짐 */
+[0, 1, 2, 3, 3.5, 4, 4.25, 4.5, 4.7].forEach(function (k, i) { zips(gb(102 + k), 2 + (i > 4 ? 2 : 0), 4 + i); });
+
+/* ===== 5. 절정: 함께한 사람들 + 상단 정보 카드(CRM 프로필 카드 모양) ===== */
+/* 근거: IDI 결과분석(포인핸드 이환희 대표·유기동물 입양 플랫폼 사회적기업 / 에이블라인드 양드림 대표·장애예술 예비 사회적기업, 07_3~5 사진은 대표님 확인 11/24), 전문가 자문 결과보고서(10.21 한정화 트리플앤 대표·GWON 운영, 서울창업디딤터 / 10.28 원규희 도도한콜라보 대표) */
+var CHIPS = [];
+function chip(a, b, tag, name, desc) { var e = document.createElement('div'); e.className = 'chip'; e.innerHTML = '<s>' + tag + '</s><strong>' + name + '</strong>' + (desc ? '<span>' + desc + '</span>' : ''); layer.appendChild(e); CHIPS.push({ a: a, b: b, e: e }); }
+var C_PH = ['참여 기관 대표 · 포인핸드', '이환희 대표', '성장 단계 맞춤 사후관리 → CRM: 기관별 단계·분류 관리'],
+    C_AB = ['참여 기관 대표 · 에이블라인드', '양드림 대표', '끝나도 이어지는 관계 → CRM: 이력 통합 · 함께 얼라이언스 안내'],
+    C_SV = ['참여자 설문', '재단 사업 참여자', '재참여 의향 79.2% → CRM: 사후관리 설문·응답 현황'],
+    C_HJ = ['전문가 자문 · 2026. 10. 21', '한정화 대표 · 트리플앤', 'GWON 플랫폼 운영'],
+    C_WK = ['전문가 자문 · 2026. 10. 28', '원규희 대표 · 도도한콜라보', '청년정책 플랫폼 「열고닫기」 운영'],
+    C_HF = ['함께일하는재단', '사내 학습동아리 NEXT LAB을 지원해 준 곳', '실무자 의견 → CRM: 내 담당 사업 중심 화면'],
+    C_NL = ['NEXT LAB', '임팩트 지속관리 연구소', '김재현 · 문재선 · 민세희 · 이채림'];
+/* v13: 3장 시제품 카드 k75~79 — 근거: 중간발표 9장(CRM 핵심 기능)·10장(프로토타입 시연: 참여자 모드·관리자 모드) */
+chip(gb(75) + .1, gb(79), '중간발표 · CRM 프로토타입 시연', '참여자 모드 · 관리자 모드', '참여자 통합 DB · 맞춤형 정보 안내 · 상담 이력 관리');
+/* v13: 2장 법률 자문 카드 k60~66 — 근거: 중간발표 6장 「개인정보 활용 및 법률 검토」, CRM 진행 기록(동의서 사후관리 항목·권한·최소 수집) */
+chip(gb(60) + .05, gb(63), '법률 자문 · 2026. 07. 08 · 법률사무소 인평', '사후 설문은 기존 수집 목적과 관련성 인정 여지', '→ CRM: 동의서 목적에 「사후관리·성과조사」 추가');
+chip(gb(63) + .05, gb(66), '법률 자문 · 개인정보 관리', '총괄 담당자와 접근 권한, 최소 수집 원칙', '→ CRM: 권한 4단계 · 꼭 필요한 정보만 수집');
+/* v13 1장 사례 리스트: k39~45. 근거: 드라이브 「4. 사후관리 한계점 및 재단 자원.xlsx」 탭 「6월_1. 내외부 사례조사 링크」(구분·헤드라인), 결론은 중간발표 4-1장 */
+var CASES = document.createElement('div'); CASES.className = 'cases';
+var CL = [['내부', '함께일하는재단, 문화예술 후원인의 밤 10주년 감사패', 'senews.kr'], ['외부', '브라이언임팩트 ‘펠로우 커넥트데이’', 'socialimpactnews.net'], ['외부', 'SK 행복얼라이언스 ‘링커스미팅’', 'bizwnews.com'], ['외부', '에이유디 사회적협동조합 ‘소통이 흐르는 밤’', 'audsc.org'], ['외부', '서울배리어프리영화제 15회', 'baff.or.kr'], ['외부', '국내 최초 ‘은둔고수 드래프트’', 'socialimpactnews.net'], ['외부', 'IBK창공 Fly High 데모데이', 'news.tf.co.kr'], ['외부', '우리다문화장학재단 ‘우리 Up 멘토링’', 'safetynews.co.kr'], ['내부', '함께일하는재단 온라인 네트워킹 ‘홈커밍데이’', 'hamkke.org'], ['외부', '한국기술교육대 동문 멘토링 박람회', 'news.unn.net'], ['내부', '청년 응원 캠페인 ‘업 투게더’', 'hamkke.org'], ['내부', '2030 SDGs 공익재단 네트워크 포럼', 'hamkke.org'], ['외부', '다음세대재단 10·20주년 이벤트 페이지', 'daumfoundation.org'], ['외부', '하나금융 상생 인턴십', 'catchnews.kr'], ['외부', '바보의나눔 바보나눔터 현판', 'babo.or.kr'], ['외부', '사랑의열매 아너소사이어티', 'chest.or.kr'], ['외부', '열매나눔재단 씨앗가게 현판', 'merryyear.org'], ['외부', '사랑의열매 착한가게 현판', 'chest.or.kr'], ['외부', '한국사회복지협의회 매칭플랫폼 ‘바로잇’', 'gbse.or.kr'], ['외부', '스타트업의 산실 ‘D캠프’', 'etoday.co.kr'], ['외부', '제주 신사업창업사관학교 동문회', 'asiaherald.co.kr'], ['외부', '아름다운가게 ‘뷰티풀펠로우’', 'socialimpactnews.net'], ['외부', '헤이그라운드 비영리 멤버십', 'eroun.net'], ['외부', '밀알복지재단 통합 멤버십 앱', 'miral.org'], ['외부', '루트임팩트 비영리 업무 공간 지원', 'futurechosun.com'], ['외부', '지역사회교육 후원인의 밤', 'kcef.kr']];
+CASES.innerHTML = '<h4>6월 · 내·외부 사례조사<em><span class="cn">0</span>건</em></h4><div class="sh"><div class="hd"><b>구분</b><span>헤드라인</span><i>출처</i></div><div class="vp"><div class="ls">' + CL.map(function (r) { return '<div class="r"><b class="' + (r[0] === '내부' ? 'in' : '') + '">' + r[0] + '</b><span>' + r[1] + '</span><i>' + r[2] + '</i></div>'; }).join('') + '</div></div></div><div class="c">공통점은 하나, 일회성 행사가 아니라 <i>관계 관리</i></div><div class="src">출처 · NEXT LAB 「4. 사후관리 한계점 및 재단 자원」 시트 › 6월_1. 내외부 사례조사 링크</div>';
+layer.appendChild(CASES);
+var CA = gb(35), CB = gb(41), CLS = CASES.querySelector('.ls'), CCN = CASES.querySelector('.cn'), CCC = CASES.querySelector('.c');
+/* 1장 한계점 k41~47 — 근거: 같은 시트 탭 「사후관리 운영의 한계점」(운영 한계·발전 및 보완 방향) */
+var LIM = document.createElement('div'); LIM.className = 'cases lim';
+LIM.innerHTML = '<h4>재단 사후관리 운영의 한계점<em>5가지</em></h4>' + [
+  ['사업 종료 이후 참여자와의 관계 단절', '장기적인 관계 자산으로 관리'],
+  ['참여자 유형별 맞춤 관리 체계 부족', '유형·성장 단계별 맞춤 후속지원'],
+  ['성과 추적·데이터 관리 체계 부족', '성과 데이터를 쌓는 CRM형 관리'],
+  ['커뮤니티 기반 연결 구조 부족', '끝난 뒤에도 이어지는 통합 플랫폼'],
+  ['특정 담당자에 의존하는 운영', '통합 DB와 플랫폼 중심 운영']
+].map(function (r, i) { return '<div class="lr"><u>0' + (i + 1) + '</u><b>' + r[0] + '</b><span>→ ' + r[1] + '</span></div>'; }).join('') + '<div class="src">출처 · NEXT LAB 「4. 사후관리 한계점 및 재단 자원」 시트 › 사후관리 운영의 한계점</div>';
+layer.appendChild(LIM);
+var LA = gb(41), LB = gb(47), LROWS = LIM.querySelectorAll('.lr');
+/* v13: 2장 인터뷰 위쪽 카드 — 근거: 「심층인터뷰(IDI) 결과분석」(26.7.1) 대표자 주요 의견·시사점, CRM 시제품·진행 기록. 2장 k=49, 인터뷰 사진 k52~60 */
+chip(gb(52) + .05, gb(56), '심층 인터뷰 · 포인핸드 이환희 대표', '성장 단계에 맞춘 사후관리, 신뢰가 먼저', '→ CRM: 기관별 단계·분류로 나눠 관리');
+chip(gb(56) + .05, gb(60), '심층 인터뷰 · 에이블라인드 양드림 대표', '사업이 끝나도 재단과 계속 이어지는 관계', '→ CRM: 참여 이력 통합 관리 · 함께 얼라이언스 안내');
+/* ===== 4. 두 번째 폭발(v11): 깨달음 → 그래서 만들었습니다 → 10월 검증 → 11월 고침 ===== */
+/* 근거: 전문가 자문 결과보고서 2건, 기술팀\GranteeManagementSystem\개선과제_정리.md, CRM 진행 기록(재단 구글 계정 로그인·권한 4단계·생년월일 미수집·동의서 사후관리 항목) */
+card(DROP, gb(111), [['연락처도, 참여 이력도', 's'], ['담당자마다 흩어져 있었습니다', 'l g']], { in: 'cut' });
+card(gb(111), gb(114), [['끝난 뒤를 챙기려면, 사업 중에 기관 정보부터 모여야 했습니다', 's'], ['답은 사업관리에 있었습니다', 'l']], { in: 'cut', out: .15 });
+device(gb(114), gb(117), '화면/crm_5.jpg', 1); device(gb(117), gb(120), '화면/crm_1.jpg', -1); DEVS.slice(-2).forEach(function (d) { d.e.style.top = '330px'; });
+PILL_A = gb(114); PILL_B = gb(120);
+lab(gb(114) + .05, gb(120), '그래서, 사업관리부터 사후관리까지 잇도록<br><b>다시 만들었습니다</b>', 'lt big'); FLASH.push([gb(114), .4]);
+shot(gb(120), gb(124), P + '10_5_GWON자문.jpg', { pos: '35% 50%', kb: 'in', dim: .25 });
+shot(gb(124), gb(128), P + '10_13_도도한콜라보자문.jpg', { pos: '50% 50%', kb: 'left', dim: .25 });
+chip(gb(120) + .05, gb(124), '검증 · 2026. 10. 21', '한정화 대표 · 트리플앤', 'CRM 시범모델 · 개인정보 보안 · 운영 체계');
+chip(gb(124) + .05, gb(128), '검증 · 2026. 10. 28', '원규희 대표 · 도도한콜라보', '‘함께얼라이언스’ 협력체계 제안 · 맞춤형 안내 · 성과지표');
+lab(gb(120) + .1, gb(128), '<b class="dt">10</b>두 분의 전문가에게 검증받고', 'lt');
+/* v12: 재단 내부 실무자 의견 강조(대표님 11/24) — 근거: 11월 폴더 CRM 기능개선 질문지, 개선과제_정리.md 「내부 의견」 항목 */
+device(gb(128), gb(132), '화면/crm_2.jpg', 1); (function (d) { d.e.style.top = '300px'; d.e.style.marginLeft = '-380px'; d.e.style.width = '900px'; })(DEVS[DEVS.length - 1]); device(gb(132), gb(138), '화면/crm_3.jpg', -1);
+chip(gb(128) + .05, gb(132), '재단 실무자 의견', '내 담당 사업 중심 화면', '기업별 누적 이력 · 예산 소진 현황 · 정산 금액 검증');
+lab(gb(128) + .05, gb(132), '재단 안의 실무자 의견까지 들었습니다<br><b>사후관리가 추가 업무가 되지 않도록</b>', 'lt big'); FLASH.push([gb(128), .3]);
+chip(gb(132) + .05, gb(135), '자문 · 의견 반영 · 2026. 11', '공용 비밀번호 대신 재단 계정 로그인', '권한 4단계 · 꼭 필요한 정보만 수집 · 사후관리 동의 항목'); chip(gb(135) + .05, gb(138), '자문 반영 · 사후관리 탭', '함께 얼라이언스 안내', '사업이 끝난 기관을 재단 협력 네트워크로 연결');
+lab(gb(132), gb(135), '<b class="dt">11</b>고치고, 또 고쳤습니다', 'lt'); lab(gb(135) + .05, gb(138), '사업이 끝나도 이어지도록<br><b>함께 얼라이언스</b>로 연결합니다', 'lt big'); FLASH.push([gb(135), .3]);
+/* v11: 감사 구간 k133~162(29박). 전문가는 앞에서 자세히 나왔으므로 한 장씩 */
+var THANKS = [
+  ['인터뷰에 응해 주신 <b>참여 기관 대표님</b>', [['07_2_인터뷰포인핸드.jpg', '50% 45%', C_PH, 2.25], ['07_1_인터뷰포인핸드.jpg', '40% 45%', C_PH, 2.25], ['07_3_인터뷰.jpg', '55% 50%', C_AB, 2.25], ['07_4_인터뷰.jpg', '50% 50%', C_AB, 2.25]]],
+  ['설문에 답해 주신 <b>모든 분</b>', [['09_2_카페셀카.jpg', '50% 45%', C_SV, 1.5], ['09_1_회의셀카.jpg', '50% 45%', C_SV, 1.5]]],
+  ['길을 짚어 주신 <b>전문가</b>', [['10_4_GWON자문.jpg', '50% 50%', ['전문가 자문 · 트리플앤 · 도도한콜라보', '한정화 대표 · 원규희 대표', '보안·운영 체계, 정보 관리 기준 → CRM: 권한·최소 수집'], 3]]],
+  ['그리고 <b>함께일하는재단</b>', [['08_1_중간발표객석.jpg', '50% 50%', C_HF, 2], ['08_2_중간발표표지.jpg', '50% 45%', C_HF, 2]]],
+  ['여기까지 함께 온 <b>우리</b>', [['09_3_사무실회의.jpg', '50% 50%', C_NL, 2], ['05_5_회의실.jpg', '50% 55%', C_NL, 3]]]
+];
+var pk = 138;
+THANKS.forEach(function (th, i) {
+  var a = pk, ca = pk, cur = null;
+  th[1].forEach(function (p, j) {
+    var len = p[3];
+    if (cur && cur !== p[2]) { chip(gb(ca) + .05, gb(pk), cur[0], cur[1], cur[2]); ca = pk; }
+    cur = p[2];
+    shot(gb(pk), gb(pk + len), P + p[0], { pos: p[1], kb: KB[(i + j) % 4], dim: .08 }); pk += len;
+  });
+  chip(gb(ca) + .05, gb(pk), cur[0], cur[1], cur[2]);
+  lab(gb(a) + .1, gb(pk), th[0], 'lt');
+});
+
+/* ===== 6. 음악이 멈춘 뒤: 검은 화면 ===== */
+card(STOP + .6, DURATION - .3, [['끝까지가 아니라,', 's'], ['끝난 뒤까지 계속됩니다', 'w g']], { out: .8 });
+card(STOP + 5.2, DURATION - .3, [['회의 14회 · 사례 45건 · 자문 3회 · 재참여 의향 79.2%', 's" style="font-size:24px;color:#9d968a;letter-spacing:.06em'], ['', 'rule'], ['NEXT LAB  ·  임팩트 지속관리 연구소', 'd'], ['김재현 · 문재선 · 민세희 · 이채림', 's" style="font-size:28px;font-weight:500;color:#bfb7a8;letter-spacing:.1em']], { out: .8 }).style.cssText += 'justify-content:flex-end;padding-bottom:110px';
+CARDS[CARDS.length - 2].e.style.cssText += 'justify-content:flex-start;padding-top:200px';
+
+function render(T) {
+  SHOTS.forEach(function (s) {
+    if (T < s.a || T >= s.b) { set(s.im, 'opacity', '0'); return; }
+    var z = clamp((T - s.a) / Math.max(1.5, s.b - s.a)), sc = 1.06, x = 0;
+    if (s.kb === 'zin') { sc = lerp(1.05, 2.6, Math.pow(clamp((T - s.a) / (s.b - s.a)), 2)); set(s.im, 'transformOrigin', s.im.style.objectPosition || '50% 50%'); } else if (s.kb === 'in') sc = lerp(1.05, 1.13, z); else if (s.kb === 'out') sc = lerp(1.13, 1.05, z); else { sc = 1.1; x = (s.kb === 'left' ? 1 : -1) * lerp(30, -30, z); }
+    set(s.im, 'opacity', String(s.fin ? clamp((T - s.a) / s.fin) : 1));
+    set(s.im, 'transform', 'translateX(' + x.toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')');
+    set(s.im, 'filter', (s.grade ? (function (w) { return 'saturate(' + lerp(.6, 1.05, w).toFixed(3) + ') contrast(1.08) sepia(' + lerp(.03, .17, w).toFixed(3) + ') '; })(clamp((s.a - 30) / 80)) : '') + 'brightness(' + (1 - s.dim) + ')');
+  });
+  CARDS.forEach(function (c) {
+    if (T < c.a || T >= c.b) { set(c.e, 'opacity', '0'); return; }
+    var lt = T - c.a, op = 1, sc = 1, bl = 0;
+    if (c.in === 'fade') { var u = eo(lt / .9); op = ease(lt / .6); bl = (1 - u) * 8; sc = lerp(1.035, 1, u); }
+    if (c.in === 'whoosh') {
+      /* v9: 줄마다 좌우에서 휙 날아들고(모션 블러·기울임), 끝에 반대로 휙 빠짐. 머무는 동안 점점 다가옴 */
+      var kids = c.kids || (c.kids = Array.prototype.slice.call(c.e.children)), oc = clamp((T - (c.b - .32)) / .32);
+      kids.forEach(function (l, i) {
+        var sg = (i + c.seed) % 2 ? 1 : -1, d = lt - i * .11, w = eo(d / .42), x = sg * (1 - w) * 760 - sg * oc * oc * 1100, sk = sg * ((1 - w) * -14 + oc * 14), lb = (1 - w) * 16 + oc * 18;
+        set(l, 'opacity', String(clamp(d / .14) * (1 - oc)));
+        set(l, 'transform', 'translateX(' + x.toFixed(1) + 'px) skewX(' + sk.toFixed(2) + 'deg)');
+        set(l, 'filter', lb > .4 ? 'blur(' + lb.toFixed(1) + 'px)' : 'none');
+      });
+      sc = 1 + c.push * eo(lt / (c.b - c.a));
+      if (c.shake && T > c.b - c.shake) { var q = (T - (c.b - c.shake)) / c.shake, fr = Math.floor(T * 30); set(c.e, 'opacity', '1'); set(c.e, 'transform', 'translate(' + ((Math.sin(fr * 12.9) * 9 * q)).toFixed(1) + 'px,' + ((Math.cos(fr * 7.3) * 6 * q)).toFixed(1) + 'px) scale(' + (sc + .08 * q * q).toFixed(4) + ')'); set(c.e, 'filter', 'none'); return; }
+      set(c.e, 'opacity', '1'); set(c.e, 'transform', 'scale(' + sc.toFixed(4) + ')'); set(c.e, 'filter', 'none'); return;
+    }
+    if (c.epic) { var kids2 = c.kids2 || (c.kids2 = Array.prototype.slice.call(c.e.children)); var spread = (1 - eo(lt / 2.0)) * .32; kids2.forEach(function (k) { if (k.className.indexOf('xl') < 0) set(k, 'letterSpacing', (spread - .02).toFixed(3) + 'em'); }); c.chs.forEach(function (ch, ci) { var d0 = lt - .2 - ci * .035, cu = eo(d0 / .7), gl = 0; set(ch, 'opacity', String(clamp(d0 / .2))); set(ch, 'transform', 'translateY(' + ((1 - cu) * 22).toFixed(1) + 'px)'); set(ch, 'filter', (cu < .98 ? 'blur(' + ((1 - cu) * 6).toFixed(1) + 'px) ' : '') + (gl > .03 ? 'brightness(' + (1 + gl * 1.1).toFixed(2) + ') drop-shadow(0 0 ' + (gl * 26).toFixed(0) + 'px rgba(245,167,51,.95))' : '') || 'none'); }); sc *= 1 + .05 * clamp(lt / (c.b - c.a)); }
+    sc *= 1 + .012 * clamp(lt / (c.b - c.a));
+    if (c.out > 0) op *= 1 - ease((T - (c.b - c.out)) / c.out);
+    set(c.e, 'opacity', String(op)); set(c.e, 'transform', 'scale(' + sc.toFixed(4) + ')'); set(c.e, 'filter', bl > .3 ? 'blur(' + bl.toFixed(1) + 'px)' : 'none');
+  });
+  NUMS.forEach(function (n) { var q = eo((T - n.a) / (BEAT * 1.6)); set(n.e, 'html', n.dec ? (n.v * q).toFixed(1) : String(Math.round(n.v * q))); });
+  LABS.forEach(function (l) { if (T < l.a || T >= l.b) { set(l.e, 'opacity', '0'); return; } set(l.e, 'opacity', String(Math.min(ease((T - l.a) / .35), 1 - ease((T - (l.b - .3)) / .3)))); });
+  CHIPS.forEach(function (c) { if (T < c.a || T >= c.b) { set(c.e, 'opacity', '0'); return; } var u = eo((T - c.a) / .45), o = clamp((T - (c.b - .25)) / .25); set(c.e, 'opacity', String(clamp((T - c.a) / .15) * (1 - o))); set(c.e, 'transform', 'translateX(' + ((1 - u) * -120 - o * 40).toFixed(1) + 'px)'); set(c.e, 'filter', u < .95 ? 'blur(' + ((1 - u) * 10).toFixed(1) + 'px)' : 'none'); });
+  if (T < gb(26)) {
+    var to = Math.min(ease((T - gb(1.5)) / .6), 1 - ease((T - (gb(25.4))) / .35)); set(TL, 'opacity', String(to));
+    var fu = ease((T - gb(2.3)) / (gb(7) - gb(2.3))); set(TL_F, 'width', (900 * fu).toFixed(1) + 'px');
+    TL_MD.forEach(function (m, i) { var on = 900 * fu >= i * 225 - 1; if (m._on !== on) { m._on = on; m.className = on ? 'md on' : 'md'; } });
+    var eh = T - gb(7); set(TL_E, 'opacity', String(eh < 0 ? 0 : Math.min(1, eh / .1) * (eh < .5 ? 1 : .75 + .25 * Math.sin(eh * 5))));
+    set(TL_E, 'transform', 'scaleY(' + (eh < 0 ? 0 : 1 + .5 * Math.max(0, 1 - eh / .35)).toFixed(3) + ')');
+    set(TL_LB[0], 'opacity', String(ease((T - gb(2.3)) / .4) * .9)); set(TL_LB[1], 'opacity', String(ease(eh / .3)));
+    set(TL_D, 'width', (500 * ease((T - gb(9.3)) / 2.4)).toFixed(1) + 'px');
+    var qh = T - gb(13); set(TL_LB[2], 'opacity', String(qh < 0 ? 0 : (T < gb(23.5) ? .5 + .4 * Math.abs(Math.sin(qh * 2.2)) : 1))); set(TL_LB[2], 'color', T >= gb(23.5) ? '#F5A733' : 'rgba(247,239,232,.6)');
+    var lead = 0;
+    TL_PP.forEach(function (p, j) { var t0 = gb(17.4) + j * .32, u = ease((T - t0) / (gb(23.5) - gb(17.4) - .96)); if (j === 0) lead = u; set(p, 'opacity', String(clamp((T - t0) / .25) * (j ? .85 : 1))); set(p, 'left', (1160 + 500 * u - j * 0).toFixed(1) + 'px'); set(p, 'transform', 'translateY(' + ((j - 1.5) * 0).toFixed(0) + 'px) scale(' + (1 - j * .12).toFixed(2) + ')'); });
+    set(TL_F2, 'width', (500 * lead).toFixed(1) + 'px');
+  } else set(TL, 'opacity', '0');
+  if (T >= LA && T < LB) {
+    var lu = eo((T - LA) / .4), lo = clamp((T - (LB - .3)) / .3);
+    set(LIM, 'opacity', String(lu * (1 - lo))); set(LIM, 'transform', 'translateY(' + ((1 - lu) * 40).toFixed(1) + 'px) scale(' + lerp(.97, 1, lu).toFixed(3) + ')');
+    LROWS.forEach(function (r, i) { var u = eo((T - LA - .3 - i * .32) / .4); set(r, 'opacity', String(u)); set(r, 'transform', 'translateX(' + ((1 - u) * 140).toFixed(1) + 'px)'); });
+  } else set(LIM, 'opacity', '0');
+  if (T >= CA && T < CB) {
+    var cu = eo((T - CA) / .4), co = clamp((T - (CB - .3)) / .3), sv = ease((T - CA - .25) / 2.2), sp2 = Math.abs(Math.sin(sv * Math.PI));
+    set(CASES, 'opacity', String(cu * (1 - co))); set(CASES, 'transform', 'translateY(' + ((1 - cu) * 40).toFixed(1) + 'px) scale(' + lerp(.97, 1, cu).toFixed(3) + ')');
+    set(CLS, 'transform', 'translateY(' + (-sv * (CL.length * 50 - 300)).toFixed(1) + 'px)'); set(CLS, 'filter', sp2 > .15 ? 'blur(' + (sp2 * 2.2).toFixed(1) + 'px)' : 'none');
+    set(CCN, 'html', String(Math.round(45 * sv)));
+    var cc = eo((T - CA - 2.4) / .4); set(CCC, 'opacity', String(cc)); set(CCC, 'transform', 'translateY(' + ((1 - cc) * 16).toFixed(1) + 'px)');
+  } else set(CASES, 'opacity', '0');
+  if (T < HIT1 + .2) {
+    var gi = Math.min(ease((T - gb(1.5)) / 1.2), 1 - ease((T - (HIT1 - .4)) / .5)); set(IGLOW, 'opacity', String(gi * .55));
+    DUST.forEach(function (p) { var y = (p.y - T * p.sp) % 804; if (y < 0) y += 804; set(p.e, 'transform', 'translate(' + (p.x + Math.sin(T * .5 + p.ph) * 40).toFixed(0) + 'px,' + y.toFixed(0) + 'px) scale(' + p.s.toFixed(2) + ')'); set(p.e, 'opacity', '0'); });
+  } else { set(IGLOW, 'opacity', '0'); if (DUST[0].e._opacity !== '0') DUST.forEach(function (p) { set(p.e, 'opacity', '0'); }); }
+  if (T < gb(26)) {
+    /* ① 카운트다운: 타임라인이 차는 동안(gb2.3~gb7) D-3 → D-DAY */
+    var cA = gb(2.3), cE = gb(7), cq = (T - cA) / (cE - cA);
+    if (T >= cA && T < gb(8.6)) { var st = Math.min(3, Math.floor(clamp(cq, 0, .999) * 4)), lbl = cq >= 1 ? 'D-DAY' : (st < 3 ? 'D-' + (3 - st) : 'D-DAY'); if (cq >= .75) lbl = 'D-DAY'; set(GC, 'html', lbl); set(GC, 'className', lbl === 'D-DAY' ? 'gcount dday' : 'gcount'); var pop = 0; set(GC, 'opacity', String(Math.min(ease((T - cA) / .4), 1 - ease((T - gb(7.9)) / .5)) * (lbl === 'D-DAY' ? 1 : .8))); set(GC, 'transform', 'scale(' + (1 + .12 * pop + .03 * clamp(cq)).toFixed(3) + ')'); } else set(GC, 'opacity', '0');
+    /* ② 레이더 동심원 + 거대한 ? */
+    if (T >= gb(9) && T < gb(15.2)) { var qa = Math.min(ease((T - gb(9)) / .8), 1 - ease((T - gb(14.6)) / .5)); set(GQ, 'opacity', '0'); set(GQ, 'transform', 'scale(' + (1 + .03 * clamp((T - gb(9)) / 3.4)).toFixed(3) + ')');
+      RINGS.forEach(function (r, i) { var u = ((T - gb(9) + i * .55) % 1.65) / 1.65; set(r, 'opacity', String(qa * (1 - u) * .7)); set(r, 'transform', 'scale(' + (1 + u * 8).toFixed(2) + ')'); });
+    } else { set(GQ, 'opacity', '0'); RINGS.forEach(function (r) { set(r, 'opacity', '0'); }); }
+    /* ③ 관계망: gb17.2~gb24 점이 켜지고 선이 그어짐 */
+    if (T >= gb(17) && T < gb(25.6)) { var na = Math.min(ease((T - gb(17)) / .6), 1 - ease((T - gb(25)) / .5)), nq = clamp((T - gb(17.2)) / (gb(24) - gb(17.2))); set(NET.el, 'opacity', String(na));
+      NET.dots.forEach(function (d, i) { var on = clamp((nq * NET.dots.length - i) / 1.2); set(d, 'opacity', on.toFixed(2)); });
+      NET.lines.forEach(function (l, i) { var li = NET.L[i], u = clamp((nq * NET.dots.length - li[0]) / 1.5); set(l, 'strokeDashoffset', ((1 - u) * li[2]).toFixed(1)); });
+    } else set(NET.el, 'opacity', '0');
+  } else { set(GC, 'opacity', '0'); set(GQ, 'opacity', '0'); set(NET.el, 'opacity', '0'); RINGS.forEach(function (r) { set(r, 'opacity', '0'); }); }
+  ZIPS.forEach(function (z) { var d = T - z.t; if (d < 0 || d > .34) { set(z.e, 'opacity', '0'); return; } var u = d / .34, x = z.dir > 0 ? lerp(-z.w, 1920, u) : lerp(1920, -z.w, u); set(z.e, 'opacity', String(Math.sin(u * Math.PI))); set(z.e, 'transform', 'translateX(' + x.toFixed(0) + 'px)' + (z.dir > 0 ? '' : ' scaleX(-1)')); });
+  PBARS.forEach(function (p) { if (T < p.a || T >= p.b) { set(p.e, 'opacity', '0'); return; } var u = eo((T - p.a) / .9), w = p.p * u; set(p.e, 'opacity', String(Math.min(clamp((T - p.a) / .2), 1 - ease((T - (p.b - .3)) / .3)))); set(p.f, 'width', w.toFixed(2) + '%'); set(p.h, 'left', w.toFixed(2) + '%'); });
+  DEVS.forEach(function (d) {
+    if (T < d.a || T >= d.b) { set(d.e, 'opacity', '0'); return; }
+    var z = clamp((T - d.a) / (d.b - d.a)), u = eo((T - d.a) / .7);
+    set(d.e, 'opacity', String(Math.min(u, 1 - ease((T - (d.b - .25)) / .25))));
+    var zs = d.zin ? lerp(1.7, 1, eo((T - d.a) / .6)) : 1; if (d.zin) u = Math.max(u, clamp((T - d.a) / .12)); set(d.e, 'opacity', String(Math.min(u, 1 - ease((T - (d.b - .25)) / .25)))); set(d.e, 'transform', 'translateY(-50%) translateY(' + (d.zin ? 0 : lerp(60, 0, u)).toFixed(1) + 'px) scale(' + zs.toFixed(3) + ') rotateX(' + lerp(16, 7, z).toFixed(2) + 'deg) rotateY(' + (d.dir * lerp(-14, -3, z)).toFixed(2) + 'deg) scale(' + lerp(.9, 1, eo(z)).toFixed(3) + ')');
+  });
+  if (T >= PILL_A && T < PILL_B) { set(stageBar, 'opacity', String(Math.min(ease((T - PILL_A) / .4), 1 - ease((T - (PILL_B - .3)) / .3)))); PILLS.forEach(function (p, i) { var on = T >= PILL_A + .3 + i * BEAT * .8; if (p._on !== on) { p._on = on; p.className = on ? 'pill on' : 'pill'; } }); } else set(stageBar, 'opacity', '0');
+  var f = 0; FLASH.forEach(function (a) { var t0 = a.length ? a[0] : a, amp = a.length ? a[1] : .8, d = T - t0; if (d >= 0 && d < .45) f = Math.max(f, amp * (1 - eo(d / .45))); }); set(flash, 'opacity', String(f));
+set(flare, 'opacity', String(Math.min(1, f * 1.4))); set(flare, 'transform', 'scaleX(' + (1 + (1 - f) * .6).toFixed(3) + ')');  var bc = ease((T - (DURATION - 2.4)) / 2); BARS.forEach(function (b) { set(b, 'height', (138 + 404 * bc).toFixed(1) + 'px'); });
+  var fr = Math.floor(T * 24); set(grain, 'transform', 'translate(' + ((fr * 73) % 128) + 'px,' + ((fr * 41) % 128) + 'px)');
+}
+window.render = render; window.DURATION = DURATION;
+window.__ready = Promise.all(IMGS.map(function (i) { return i.decode().catch(function () { console.log('IMG FAIL ' + i.src); }); }).concat([document.fonts.load('800 20px SUIT')])).then(function () { render(0); return true; });
+if (!/[?&]render/.test(location.search)) {
+  var stage = $('stage');
+  var fit = function () { var q = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = 'translate(' + ((innerWidth - 1920 * q) / 2) + 'px,' + ((innerHeight - 1080 * q) / 2) + 'px) scale(' + q + ')'; };
+  fit(); addEventListener('resize', fit);
+  var ui = document.createElement('div'); ui.id = 'ui'; ui.innerHTML = '<button id="pp">재생</button><input id="sk" type="range" min="0" step="0.01" max="' + DURATION + '"><span id="tc"></span>'; document.body.appendChild(ui);
+  var pp = ui.querySelector('#pp'), sk = ui.querySelector('#sk'), tc = ui.querySelector('#tc'), au = new Audio(MUSIC), t = 0, playing = false, last = 0;
+  var mm = function (x) { return Math.floor(x / 60) + ':' + ('0' + Math.floor(x % 60)).slice(-2); };
+  var seek = function (x) { t = clamp(x, 0, DURATION); au.currentTime = t; };
+  var toggle = function () { playing = !playing; pp.textContent = playing ? '정지' : '재생'; last = performance.now(); if (t >= DURATION - .05) seek(0); if (playing) { au.currentTime = t; au.play(); } else au.pause(); };
+  pp.onclick = toggle; sk.oninput = function () { seek(+sk.value); };
+  addEventListener('keydown', function (e) { if (e.code === 'Space') { e.preventDefault(); toggle(); } if (e.code === 'ArrowRight') seek(t + 5); if (e.code === 'ArrowLeft') seek(t - 5); if (e.code === 'KeyF') fs(); });
+  var fs = function () { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); };
+  stage.ondblclick = fs;
+  (function loop(now) { if (playing) { if (!au.paused) t = au.currentTime; else t += (now - last) / 1000; if (t >= DURATION) { t = DURATION - .01; toggle(); } } last = now; render(t); sk.value = t; tc.textContent = mm(t) + ' / ' + mm(DURATION); requestAnimationFrame(loop); })(performance.now());
+}
+</script></body></html>

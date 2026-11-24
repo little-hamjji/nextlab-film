@@ -1,0 +1,15 @@
+배경음악 출처: Pixabay Content License (상업적 이용 가능·출처 표기 불필요, 음원 단독 재배포·판매 금지)
+A Inspirational Piano Adventure (leberch): https://pixabay.com/music/main-title-inspirational-piano-adventure-248034/ — 영상 0:12부터 끝까지
+섞은 파일: 배경음악.m4a (3:06, 12초 지연 시작)
+글꼴: SUIT Variable (SIL OFL 1.1) — fonts/SUIT_LICENSE.txt
+
+[2026-11-23 v5 배경음악 교체]
+- 곡: Epic Pirate / MomotMusic (Pixabay, https://pixabay.com/music/main-title-epic-pirate-157294/)
+- 라이선스: Pixabay Content License (상업 사용 가능, 출처 표기 불필요, 곡 단독 재배포 금지)
+- 원본: 음악/B_epic-pirate-157294.mp3 → 음량 맞춤(-15 LUFS) 음악/배경음악.m4a
+- 이전 배경음악: _보관/배경음악_v2.m4a
+
+[2026-11-24 내레이션 사본 video_내레이션.html]
+- 음성: ElevenLabs TTS, 기본 목소리 Liam(TX3LPaxmHKxFdv7VOQHJ), 모델 eleven_v3, 무료 요금제(비상업·출처 표기 조건 — 성과공유회 영상 때와 같이 대표님 판단으로 운영)
+- 대본: 내레이션/01_내레이션_대본.md, 문장별 원본 내레이션/음성_리암, 무음 자른 것 음성_리암_trim
+- 섞기: 내레이션/build_narr.js → 내레이션/영상오디오_리암.m4a (배경음악 덕킹, 끝 2.5초 페이드)
