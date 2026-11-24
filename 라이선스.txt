@@ -17,3 +17,6 @@ A Inspirational Piano Adventure (leberch): https://pixabay.com/music/main-title-
 ## 내레이션 목소리 변경·요금제 정정 (2026-11-24)
 - 목소리: ElevenLabs 기본 목소리 Bella(hpp4J3VqNfWAUOO0d1Us), eleven_multilingual_v2, 밝고 가벼운 톤(대표님: 기존 남성 목소리가 부담스럽다는 의견).
 - ⚠️ 정정: 현재 ElevenLabs 계정은 **무료 요금제**로 확인됨(라이브러리 목소리 API 사용 시 '무료 사용자' 오류). 무료 요금제는 비상업적 이용만 허용되고 'ElevenLabs' 출처 표기가 필요함. 앞에 적은 '유료 구독, 상업적 이용 가능'은 틀린 기록. 외부·공식 배포 전 유료 전환 또는 출처 표기 필요.
+
+[2026-11-24 잔잔한 음악 선택지]
+- 「여성 목소리 · 잔잔한 음악」「잔잔한 음악만」: 위 A Inspirational Piano Adventure(Pixabay, leberch) 0:00~1:44, 1.5초 페이드인, 음악 0.6배(음악/잔잔한음악.m4a, 내레이션/영상오디오_벨라_피아노.m4a). 기존 곡 선택지는 그대로 유지.

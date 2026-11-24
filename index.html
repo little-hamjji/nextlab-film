@@ -109,7 +109,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:'SUIT
    원칙: 검은 화면 문구 → 박자에 맞춰 장면이 터짐. 흔들림·입자·빛줄기 없음, 컷은 강박에만, 화면 하나에 한 가지.
    음악 Epic Pirate 105.9BPM, 첫 박 0.225초. 첫 폭발 26박·잔잔 84박·두 번째 폭발 107박·끝 162박 */
 var BEAT = 0.5665, PH = 0.225; function gb(k) { return PH + BEAT * k; }
-var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_벨라.m4a?v=4'; window.TRACKS = [['여성 목소리', '내레이션/영상오디오_벨라.m4a?v=4'], ['낮은 목소리', '내레이션/영상오디오_브라이언.m4a?v=3'], ['음악만', '음악/배경음악.m4a?v=3']];
+var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_벨라.m4a?v=4'; window.TRACKS = [['여성 목소리', '내레이션/영상오디오_벨라.m4a?v=4'], ['여성 목소리 · 잔잔한 음악', '내레이션/영상오디오_벨라_피아노.m4a?v=1'], ['낮은 목소리', '내레이션/영상오디오_브라이언.m4a?v=3'], ['음악만', '음악/배경음악.m4a?v=3'], ['잔잔한 음악만', '음악/잔잔한음악.m4a?v=1']];
 var clamp = function (x, a, b) { return Math.max(a == null ? 0 : a, Math.min(b == null ? 1 : b, x)); };
 var ease = function (x) { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
 var eo = function (x) { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
