@@ -109,7 +109,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:'SUIT
    원칙: 검은 화면 문구 → 박자에 맞춰 장면이 터짐. 흔들림·입자·빛줄기 없음, 컷은 강박에만, 화면 하나에 한 가지.
    음악 Epic Pirate 105.9BPM, 첫 박 0.225초. 첫 폭발 26박·잔잔 84박·두 번째 폭발 107박·끝 162박 */
 var BEAT = 0.5665, PH = 0.225; function gb(k) { return PH + BEAT * k; }
-var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_지영2_피아노.m4a?v=8'; window.TRACKS = [['차분한 한국어 목소리 · 잔잔한 음악 (스토리텔링 억양)', '내레이션/영상오디오_지영2_피아노.m4a?v=8'], ['차분한 한국어 목소리 · 잔잔한 음악', '내레이션/영상오디오_지영_피아노.m4a?v=1'], ['차분한 한국어 목소리', '내레이션/영상오디오_지영.m4a?v=1'], ['여성 목소리', '내레이션/영상오디오_벨라.m4a?v=4'], ['여성 목소리 · 잔잔한 음악', '내레이션/영상오디오_벨라_피아노.m4a?v=1'], ['낮은 목소리', '내레이션/영상오디오_브라이언.m4a?v=3'], ['음악만', '음악/배경음악.m4a?v=3'], ['잔잔한 음악만', '음악/잔잔한음악.m4a?v=1']];
+var HIT1 = gb(26), CALM = gb(84), DROP = gb(107), STOP = gb(162), DURATION = 104, MUSIC = '내레이션/영상오디오_v12_2분.m4a?v=2';
 var clamp = function (x, a, b) { return Math.max(a == null ? 0 : a, Math.min(b == null ? 1 : b, x)); };
 var ease = function (x) { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
 var eo = function (x) { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
@@ -372,21 +372,24 @@ function render(T) {
 set(flare, 'opacity', String(Math.min(1, f * 1.4))); set(flare, 'transform', 'scaleX(' + (1 + (1 - f) * .6).toFixed(3) + ')');  var bc = ease((T - (DURATION - 2.4)) / 2); BARS.forEach(function (b) { set(b, 'height', (138 + 404 * bc).toFixed(1) + 'px'); });
   var fr = Math.floor(T * 24); set(grain, 'transform', 'translate(' + ((fr * 73) % 128) + 'px,' + ((fr * 41) % 128) + 'px)');
 }
-window.render = render; window.DURATION = DURATION;
+/* v12 (2026-11-27) 2분판: 장면마다 나레이션이 끝난 뒤 1.3초 이상 쉬도록 장면을 늘림. WARP = [새 시작, 새 끝, 원래 시작, 원래 끝], 내레이션/plan_v12.js가 계산 */
+var WARP = [[0,1.36,0,1.36],[1.36,5.32,1.36,5.32],[5.32,9.86,5.32,9.86],[9.86,15.85,9.86,14.95],[15.85,19.25,14.95,18.35],[19.25,22.6,18.35,20.15],[22.6,28.73,20.15,26.28],[28.73,30.43,26.28,27.98],[30.43,34.04,27.98,29.68],[34.04,37.42,29.68,31.95],[37.42,40.81,31.95,34.22],[40.81,45.86,34.22,37.61],[45.86,51.95,37.61,42.71],[51.95,57.05,42.71,47.81],[57.05,61.07,47.81,51.21],[61.07,65.25,51.21,54.61],[65.25,70.72,54.61,58.01],[70.72,74.04,58.01,60.84],[74.04,78.02,60.84,63.11],[78.02,81.42,63.11,64.81],[81.42,85.31,64.81,68.2],[85.31,88.92,68.2,70.47],[88.92,92.39,70.47,72.74],[92.39,95.64,72.74,75],[95.64,98.87,75,76.75],[98.87,102.15,76.75,78.4],[102.15,116.35,78.4,92.6],[116.35,121.75,92.6,97.2],[121.75,128.55,97.2,104]], DUR2 = 128.55, renderO = render;
+function renderW(t) { t = clamp(t, 0, DUR2 - 1e-4); var i = 0; while (i < WARP.length - 1 && t >= WARP[i][1]) i++; var s = WARP[i]; renderO(s[2] + (t - s[0]) / (s[1] - s[0]) * (s[3] - s[2])); }
+window.render = renderW; window.DURATION = DUR2;
 window.__ready = Promise.all(IMGS.map(function (i) { return i.decode().catch(function () { console.log('IMG FAIL ' + i.src); }); }).concat([document.fonts.load('800 20px SUIT')])).then(function () { render(0); return true; });
 if (!/[?&]render/.test(location.search)) {
   var stage = $('stage');
   var fit = function () { var q = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = 'translate(' + ((innerWidth - 1920 * q) / 2) + 'px,' + ((innerHeight - 1080 * q) / 2) + 'px) scale(' + q + ')'; };
   fit(); addEventListener('resize', fit);
-  var ui = document.createElement('div'); ui.id = 'ui'; ui.innerHTML = '<button id="pp">재생</button><input id="sk" type="range" min="0" step="0.01" max="' + DURATION + '"><span id="tc"></span>' + (window.TRACKS ? '<select id="vo">' + TRACKS.map(function (k) { return '<option value="' + k[1] + '">' + k[0] + '</option>'; }).join('') + '</select>' : ''); document.body.appendChild(ui);
+  var ui = document.createElement('div'); ui.id = 'ui'; ui.innerHTML = '<button id="pp">재생</button><input id="sk" type="range" min="0" step="0.01" max="' + DUR2 + '"><span id="tc"></span>' + (window.TRACKS ? '<select id="vo">' + TRACKS.map(function (k) { return '<option value="' + k[1] + '">' + k[0] + '</option>'; }).join('') + '</select>' : ''); document.body.appendChild(ui);
   var pp = ui.querySelector('#pp'), sk = ui.querySelector('#sk'), tc = ui.querySelector('#tc'), au = new Audio(MUSIC), t = 0, playing = false, last = 0;
   var mm = function (x) { return Math.floor(x / 60) + ':' + ('0' + Math.floor(x % 60)).slice(-2); };
-  var seek = function (x) { t = clamp(x, 0, DURATION); au.currentTime = t; };
-  var toggle = function () { playing = !playing; pp.textContent = playing ? '정지' : '재생'; last = performance.now(); if (t >= DURATION - .05) seek(0); if (playing) { au.currentTime = t; au.play(); } else au.pause(); };
+  var seek = function (x) { t = clamp(x, 0, DUR2); au.currentTime = t; };
+  var toggle = function () { playing = !playing; pp.textContent = playing ? '정지' : '재생'; last = performance.now(); if (t >= DUR2 - .05) seek(0); if (playing) { au.currentTime = t; au.play(); } else au.pause(); };
   pp.onclick = toggle; var vo = ui.querySelector('#vo'); if (vo) vo.onchange = function () { au.pause(); au.src = vo.value; au.currentTime = t; if (playing) au.play(); vo.blur(); }; sk.oninput = function () { seek(+sk.value); };
   addEventListener('keydown', function (e) { if (e.code === 'Space') { e.preventDefault(); toggle(); } if (e.code === 'ArrowRight') seek(t + 5); if (e.code === 'ArrowLeft') seek(t - 5); if (e.code === 'KeyF') fs(); });
   var fs = function () { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); };
   stage.ondblclick = fs;
-  (function loop(now) { if (playing) { if (!au.paused) t = au.currentTime; else t += (now - last) / 1000; if (t >= DURATION) { t = DURATION - .01; toggle(); } } last = now; render(t); sk.value = t; tc.textContent = mm(t) + ' / ' + mm(DURATION); requestAnimationFrame(loop); })(performance.now());
+  (function loop(now) { if (playing) { if (!au.paused) t = au.currentTime; else t += (now - last) / 1000; if (t >= DUR2) { t = DUR2 - .01; toggle(); } } last = now; renderW(t); sk.value = t; tc.textContent = mm(t) + ' / ' + mm(DUR2); requestAnimationFrame(loop); })(performance.now());
 }
 </script></body></html>
